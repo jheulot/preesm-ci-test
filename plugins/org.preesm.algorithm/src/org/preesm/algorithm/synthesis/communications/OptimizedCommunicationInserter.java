@@ -35,19 +35,26 @@
 package org.preesm.algorithm.synthesis.communications;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.stream.Stream;
 import org.preesm.algorithm.mapper.abc.transaction.AddSendReceiveTransaction;
 import org.preesm.algorithm.mapper.model.special.ReceiveVertex;
 import org.preesm.algorithm.mapper.model.special.SendVertex;
 import org.preesm.algorithm.mapper.tools.CommunicationOrderChecker;
 import org.preesm.algorithm.mapping.model.Mapping;
+import org.preesm.algorithm.schedule.model.CommunicationActor;
 import org.preesm.algorithm.schedule.model.ReceiveEndActor;
 import org.preesm.algorithm.schedule.model.ReceiveStartActor;
+import org.preesm.algorithm.schedule.model.Schedule;
 import org.preesm.algorithm.schedule.model.SendStartActor;
 import org.preesm.algorithm.synthesis.schedule.ScheduleOrderManager;
+import org.preesm.commons.logger.PreesmLogger;
 import org.preesm.model.pisdf.AbstractActor;
 import org.preesm.model.pisdf.Fifo;
+import org.preesm.model.pisdf.PiGraph;
+import org.preesm.model.scenario.Scenario;
 import org.preesm.model.slam.ComponentInstance;
+import org.preesm.model.slam.Design;
 import org.preesm.model.slam.SlamRoute;
 import org.preesm.model.slam.SlamRouteStep;
 
@@ -78,6 +85,24 @@ public class OptimizedCommunicationInserter extends DefaultCommunicationInserter
 
   }
 
+  long timeFiltering     = 0;
+  long timeReordering    = 0;
+  long timeBuildingOrder = 0;
+
+  @Override
+  public List<CommunicationActor> insertCommunications(PiGraph piGraph, Design slamDesign, Scenario scenario,
+      Schedule schedule, Mapping mapping) {
+    long start = System.currentTimeMillis();
+    final List<CommunicationActor> insertCommunications = super.insertCommunications(piGraph, slamDesign, scenario,
+        schedule, mapping);
+    long end = System.currentTimeMillis();
+    PreesmLogger.getLogger().log(Level.INFO, () -> "Total time :                    " + (end - start) + " ms");
+    PreesmLogger.getLogger().log(Level.INFO, () -> "Total time in buiilding order : " + timeBuildingOrder + " ms");
+    PreesmLogger.getLogger().log(Level.INFO, () -> "Total time in filtering :       " + timeFiltering + " ms");
+    PreesmLogger.getLogger().log(Level.INFO, () -> "Total time in reordering :      " + timeReordering + " ms");
+    return insertCommunications;
+  }
+
   /**
    * The purpose of this method is to reschedule {@link ReceiveVertex} of the receiverOperator to comply with
    * constraints on communication primitive order enforced by the {@link CommunicationOrderChecker}. <br>
@@ -92,14 +117,17 @@ public class OptimizedCommunicationInserter extends DefaultCommunicationInserter
 
     final SendStartActor currentSSA = currentREA.getSourceSendStart();
 
+    long start = System.currentTimeMillis();
     final List<AbstractActor> operatorActors = scheduleOrderManager.buildScheduleAndTopologicalOrderedList(mapping,
         receiverOperator);
     final List<AbstractActor> targetOperatorActors = scheduleOrderManager
         .buildScheduleAndTopologicalOrderedList(mapping, senderOperator);
+    timeBuildingOrder += (System.currentTimeMillis() - start);
 
     final int indexOfCurrentSend = targetOperatorActors.indexOf(currentSSA);
     final int indexOfCurrentReceive = operatorActors.indexOf(currentREA);
 
+    start = System.currentTimeMillis();
     final Stream<ReceiveEndActor> stream = operatorActors.stream()
         // keep receive vertices
         .filter(v -> v instanceof ReceiveEndActor).map(ReceiveEndActor.class::cast)
@@ -113,7 +141,9 @@ public class OptimizedCommunicationInserter extends DefaultCommunicationInserter
           final int indexOfv = targetOperatorActors.indexOf(vSend);
           return indexOfv < indexOfCurrentSend;
         });
+    timeFiltering += (System.currentTimeMillis() - start);
 
+    start = System.currentTimeMillis();
     stream.forEach(v -> {
       final ReceiveEndActor receiveEnd = v;
       final ReceiveStartActor receiveStart = v.getReceiveStart();
@@ -123,5 +153,6 @@ public class OptimizedCommunicationInserter extends DefaultCommunicationInserter
 
       scheduleOrderManager.insertBefore(currentREA.getReceiveStart(), receiveStart, receiveEnd);
     });
+    timeReordering += (System.currentTimeMillis() - start);
   }
 }
