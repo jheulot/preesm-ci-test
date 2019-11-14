@@ -7,7 +7,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.preesm.algorithm.schedule.model.CommunicationActor;
 import org.preesm.algorithm.schedule.model.ReceiveEndActor;
 import org.preesm.algorithm.schedule.model.ReceiveStartActor;
-import org.preesm.algorithm.schedule.model.Schedule;
 import org.preesm.algorithm.schedule.model.SendEndActor;
 import org.preesm.algorithm.schedule.model.SendStartActor;
 import org.preesm.algorithm.schedule.model.util.ScheduleSwitch;
@@ -31,14 +30,14 @@ import org.preesm.model.pisdf.util.PiMMSwitch;
  */
 public abstract class AbstractTimer extends PiMMSwitch<Long> {
 
-  protected final Schedule schedule;
-  protected final PiGraph  pigraph;
+  protected final ScheduleOrderManager scheduleOrderManager;
+  protected final PiGraph              pigraph;
 
   /**
    */
-  public AbstractTimer(final PiGraph pigraph, final Schedule schedule) {
+  public AbstractTimer(final PiGraph pigraph, final ScheduleOrderManager scheduleOrderManager) {
     this.pigraph = pigraph;
-    this.schedule = schedule;
+    this.scheduleOrderManager = scheduleOrderManager;
   }
 
   /**
@@ -46,7 +45,6 @@ public abstract class AbstractTimer extends PiMMSwitch<Long> {
    */
   public Map<AbstractActor, ActorExecutionTiming> computeTimings() {
     final Map<AbstractActor, ActorExecutionTiming> res = new LinkedHashMap<>();
-    final ScheduleOrderManager scheduleOrderManager = new ScheduleOrderManager(this.pigraph, this.schedule);
     final List<AbstractActor> orderedActors = scheduleOrderManager.buildScheduleAndTopologicalOrderedList();
     for (final AbstractActor actor : orderedActors) {
       final long duration = this.doSwitch(actor);
