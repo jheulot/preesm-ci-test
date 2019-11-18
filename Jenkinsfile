@@ -25,7 +25,7 @@ pipeline {
 
     stages {
         stage('Fetch Source Code') {
-            git 'https://github.com/preesm/preesm.git'
+            checkout scm
         }
 
 		parallel {
