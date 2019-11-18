@@ -30,40 +30,44 @@ pipeline {
             }
         }
 
-		parallel {
-			stage ('Checkstyle') {
-	        	steps{
-					sh "releng/run_checkstyle.sh"
+        stage('Pre conf'){
+			parallel {
+				stage ('Checkstyle') {
+		        	steps{
+						sh "releng/run_checkstyle.sh"
+					}
+				}	
+				stage ('Validate POM') {
+		        	steps{
+						sh "mvn ${mavenOpts} -Dtycho.mode=maven help:help -q"
+					}
 				}
-			}	
-			stage ('Validate POM') {
-	        	steps{
-					sh "mvn ${mavenOpts} -Dtycho.mode=maven help:help -q"
-				}
-			}
-			stage('Fetch RCPTT') {
-	        	steps{
-					sh './releng/fetch-rcptt-runner.sh'
+				stage('Fetch RCPTT') {
+		        	steps{
+						sh './releng/fetch-rcptt-runner.sh'
+					}
 				}
 			}
 		}
 
-		parallel{
-			stage ('Resolve Maven Dependencies') {
-        		steps{
-					sh "mvn ${mavenOpts} dependency:go-offline -Dtycho.mode=maven"
+        stage('Deps'){
+			parallel{
+				stage ('Resolve Maven Dependencies') {
+	        		steps{
+						sh "mvn ${mavenOpts} dependency:go-offline -Dtycho.mode=maven"
+					}
 				}
-			}
-			
-			stage ('Resolve P2 Dependencies') {
-				// Resolve P2 dependencies
-				// note: help:help with arg -q makes a "nop" goal for maven
-				// see https://stackoverflow.com/a/27020792/3876938
-				// We have to call maven with a nop goal to simply load the
-				// tycho P2 resolver that will load all required dependencies
-				// This will allow to run next stages in offline mode
-        		steps{
-					sh "mvn ${mavenOpts} help:help"
+				
+				stage ('Resolve P2 Dependencies') {
+					// Resolve P2 dependencies
+					// note: help:help with arg -q makes a "nop" goal for maven
+					// see https://stackoverflow.com/a/27020792/3876938
+					// We have to call maven with a nop goal to simply load the
+					// tycho P2 resolver that will load all required dependencies
+					// This will allow to run next stages in offline mode
+	        		steps{
+						sh "mvn ${mavenOpts} help:help"
+					}
 				}
 			}
 		}
@@ -82,25 +86,28 @@ pipeline {
 				sh "mvn --offline --fail-at-end ${mavenOpts} verify "
 			}	
 		}
-		parallel {
-			// run sonar
-			// note: run on same node to get test results and findbugs reports
-			// note: never fail on that stage (report warning only)
-			// note: executing in parallel with 'package' should not interfere
-			stage ('Sonar') {
-        		steps{
-					sh "mvn --offline ${mavenOpts} sonar:sonar"
-				}
-			}
 
-			stage ('Check Packaging') {
-				// final stage to check that the products and site can be packaged
-				// noneed to redo all tests there
-        		steps{
-					sh "mvn --offline ${mavenOpts} -Dmaven.test.skip=true package"
+		stage ('Post Build') {
+			parallel {
+				// run sonar
+				// note: run on same node to get test results and findbugs reports
+				// note: never fail on that stage (report warning only)
+				// note: executing in parallel with 'package' should not interfere
+				stage ('Sonar') {
+	        		steps{
+						sh "mvn --offline ${mavenOpts} sonar:sonar"
+					}
 				}
-			}
-		}	
+
+				stage ('Check Packaging') {
+					// final stage to check that the products and site can be packaged
+					// noneed to redo all tests there
+	        		steps{
+						sh "mvn --offline ${mavenOpts} -Dmaven.test.skip=true package"
+					}
+				}
+			}	
+		}
     }
 }
 
