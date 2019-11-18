@@ -25,25 +25,32 @@ pipeline {
 
     stages {
         stage('Fetch Source Code') {
-            checkout scm
+        	steps{
+            	checkout scm
+            }
         }
 
 		parallel {
 			stage ('Checkstyle') {
-				sh "releng/run_checkstyle.sh"
+	        	steps{
+					sh "releng/run_checkstyle.sh"
+				}
 			}	
 			stage ('Validate POM') {
-				sh "mvn ${mavenOpts} -Dtycho.mode=maven help:help -q"
+	        	steps{
+					sh "mvn ${mavenOpts} -Dtycho.mode=maven help:help -q"
+				}
 			}
 			stage('Fetch RCPTT') {
-				sh './releng/fetch-rcptt-runner.sh'
+	        	steps{
+					sh './releng/fetch-rcptt-runner.sh'
+				}
 			}
 		}
 
 		parallel{
 			stage ('Resolve Maven Dependencies') {
-				retry(retryResolveCount) {
-					// resolve Maven dependencies (jars, plugins) for all modules
+        		steps{
 					sh "mvn ${mavenOpts} dependency:go-offline -Dtycho.mode=maven"
 				}
 			}
@@ -55,22 +62,25 @@ pipeline {
 				// We have to call maven with a nop goal to simply load the
 				// tycho P2 resolver that will load all required dependencies
 				// This will allow to run next stages in offline mode
-				retry(retryResolveCount) {
+        		steps{
 					sh "mvn ${mavenOpts} help:help"
 				}
 			}
 		}
 
 		stage ('Build') {
-			sh "mvn --offline ${mavenOpts} package -DskipTests=true -Dmaven.test.skip=true"
+        	steps{
+				sh "mvn --offline ${mavenOpts} package -DskipTests=true -Dmaven.test.skip=true"
+			}
 		}
 
 		stage ('Test') {
 			// run tests and findbugs
 			// note: findbugs need everything packaged
 			// note: fail at end to gather as much traces as possible
-			sh "mvn --offline --fail-at-end ${mavenOpts} verify "
-
+        	steps{
+				sh "mvn --offline --fail-at-end ${mavenOpts} verify "
+			}	
 		}
 		parallel {
 			// run sonar
@@ -78,13 +88,17 @@ pipeline {
 			// note: never fail on that stage (report warning only)
 			// note: executing in parallel with 'package' should not interfere
 			stage ('Sonar') {
-				sh "mvn --offline ${mavenOpts} sonar:sonar"
+        		steps{
+					sh "mvn --offline ${mavenOpts} sonar:sonar"
+				}
 			}
 
 			stage ('Check Packaging') {
 				// final stage to check that the products and site can be packaged
 				// noneed to redo all tests there
-				sh "mvn --offline ${mavenOpts} -Dmaven.test.skip=true package"
+        		steps{
+					sh "mvn --offline ${mavenOpts} -Dmaven.test.skip=true package"
+				}
 			}
 		}	
     }
