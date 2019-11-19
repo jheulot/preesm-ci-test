@@ -8,10 +8,7 @@
 ### Note that the projects will build without running this script
 ###
 
-TMP=$1
-M2DIR=${TMP:-$HOME/.m2}
-
-echo $M2DIR
+M2DIR=${$1:=m2-repository}
 
 DIR=$(cd `dirname $0` && echo `git rev-parse --show-toplevel`)
 
