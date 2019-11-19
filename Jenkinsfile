@@ -31,7 +31,7 @@ pipeline {
         }
 
         stage('Get dependecies'){
-			parallel {
+			stages {
 				stage('Fetch RCPTT') {
 		        	steps{
 						sh './releng/fetch-rcptt-runner.sh m2-repository'
