@@ -30,51 +30,38 @@ pipeline {
             }
         }
 
-        stage('Pre conf'){
+        stage('Get dependecies'){
 			parallel {
-				stage ('Checkstyle') {
+				stage('Fetch RCPTT') {
 		        	steps{
-						sh "releng/run_checkstyle.sh"
+						sh './releng/fetch-rcptt-runner.sh m2-repository'
 					}
-				}	
+				}
 				stage ('Validate POM') {
 		        	steps{
 						sh "mvn ${mavenOpts} -Dtycho.mode=maven help:help -q"
 					}
 				}
-				stage('Fetch RCPTT') {
-		        	steps{
-						sh './releng/fetch-rcptt-runner.sh'
-					}
-				}
-			}
-		}
-
-        stage('Deps'){
-			parallel{
 				stage ('Resolve Maven Dependencies') {
 	        		steps{
 						sh "mvn ${mavenOpts} dependency:go-offline -Dtycho.mode=maven"
 					}
 				}
-				
-				stage ('Resolve P2 Dependencies') {
-					// Resolve P2 dependencies
-					// note: help:help with arg -q makes a "nop" goal for maven
-					// see https://stackoverflow.com/a/27020792/3876938
-					// We have to call maven with a nop goal to simply load the
-					// tycho P2 resolver that will load all required dependencies
-					// This will allow to run next stages in offline mode
-	        		steps{
-						sh "mvn ${mavenOpts} help:help"
-					}
-				}
 			}
 		}
 
-		stage ('Build') {
-        	steps{
-				sh "mvn --offline ${mavenOpts} package -DskipTests=true -Dmaven.test.skip=true"
+        stage('Build'){
+			parallel{
+				stage ('Build') {
+		        	steps{
+						sh "mvn --offline ${mavenOpts} package -DskipTests=true -Dmaven.test.skip=true"
+					}
+				}
+				stage ('Checkstyle') {
+		        	steps{
+						sh "releng/run_checkstyle.sh"
+					}
+				}	
 			}
 		}
 
