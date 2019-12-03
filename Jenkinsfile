@@ -84,7 +84,7 @@ pipeline {
 	        		steps{
 						sh "mvn ${mavenOpts} sonar:sonar \
 							  -Dsonar.projectKey=preesm \
-							  -Dsonar.host.url=http://localhost:9000 \
+							  -Dsonar.host.url=http://sonarqube:9000 \
 							  -Dsonar.login=ce7104cf20f3ec0c7abb03e37b33c2cb4ae6013b"
 					}
 				}
