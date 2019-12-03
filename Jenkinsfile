@@ -39,7 +39,7 @@ pipeline {
 				}
 				stage ('Validate POM') {
 		        	steps{
-						sh "mvn ${mavenOpts} -Dtycho.mode=maven help:help -q"
+						sh "mvn ${mavenOpts} -Dtycho.mode=maven help:help"
 					}
 				}
 				stage ('Resolve Maven Dependencies') {
@@ -54,7 +54,7 @@ pipeline {
 			parallel{
 				stage ('Build') {
 		        	steps{
-						sh "mvn --offline ${mavenOpts} package -DskipTests=true -Dmaven.test.skip=true"
+						sh "mvn ${mavenOpts} package -DskipTests=true -Dmaven.test.skip=true"
 					}
 				}
 				stage ('Checkstyle') {
