@@ -22,7 +22,7 @@ RCPTTVER=$(cd ${DIR} && cat pom.xml | grep -o "<rcptt-runner-version>\(.*\)</rcp
 if [ ! -e "${M2DIR}/repository/org/eclipse/rcptt/runner/rcptt.runner/${RCPTTVER}/rcptt.runner-${RCPTTVER}.zip" ]; then
 
   URLVER=$(echo ${RCPTTVER} | sed -e 's#-#/#g')
-  wget -q ${MIRROR}/rcptt/release/${URLVER}/runner/rcptt.runner-${RCPTTVER}.zip -O rcptt.runner-${RCPTTVER}.zip
+  wget -nv ${MIRROR}/rcptt/release/${URLVER}/runner/rcptt.runner-${RCPTTVER}.zip -O rcptt.runner-${RCPTTVER}.zip
   mvn -Dtycho.mode=maven install:install-file -Dfile=rcptt.runner-${RCPTTVER}.zip -DgroupId=org.eclipse.rcptt.runner -DartifactId=rcptt.runner -Dversion=${RCPTTVER} -Dpackaging=zip -Dmaven.repo.local=${M2DIR}
   rm rcptt.runner-${RCPTTVER}.zip
 fi
