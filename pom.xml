@@ -122,17 +122,6 @@
       <updatesite.eclipse>${eclipse.mirror}/releases/2019-09/</updatesite.eclipse>
       <updatesite.eclipse.updates>${eclipse.mirror}/eclipse/updates/4.13</updatesite.eclipse.updates>
       <updatesite.tmf>${eclipse.mirror}/modeling/tmf/xtext/updates/releases/${xtext-version}</updatesite.tmf>
-
-      <!-- ############## -->
-      <!-- SONAR CONFIG -->
-      <!-- ############## -->
-      <jacoco.destFile>../../target/jacoco.exec</jacoco.destFile>
-      <sonar.coverage.jacoco.xmlReportPaths>${project.reporting.outputDirectory}/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-      
-      <sonar.projectKey>jheulot_preesm-ci-test</sonar.projectKey>
-      <sonar.organization>jheulot</sonar.organization>
-      <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-      <sonar.login>e792c08156791446e3010265e01f5b43a0cd52b6</sonar.login>
    </properties>
 
    <repositories>

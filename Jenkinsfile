@@ -70,7 +70,7 @@ pipeline {
 			// note: findbugs need everything packaged
 			// note: fail at end to gather as much traces as possible
         	steps{
-				sh "mvn --offline --fail-at-end ${mavenOpts} verify "
+				sh "mvn --fail-at-end ${mavenOpts} verify "
 			}	
 		}
 
@@ -82,7 +82,10 @@ pipeline {
 				// note: executing in parallel with 'package' should not interfere
 				stage ('Sonar') {
 	        		steps{
-						sh "mvn --offline ${mavenOpts} sonar:sonar"
+						sh "mvn ${mavenOpts} sonar:sonar \
+							  -Dsonar.projectKey=preesm \
+							  -Dsonar.host.url=http://localhost:9000 \
+							  -Dsonar.login=ce7104cf20f3ec0c7abb03e37b33c2cb4ae6013b"
 					}
 				}
 
@@ -90,7 +93,7 @@ pipeline {
 					// final stage to check that the products and site can be packaged
 					// noneed to redo all tests there
 	        		steps{
-						sh "mvn --offline ${mavenOpts} -Dmaven.test.skip=true package"
+						sh "mvn ${mavenOpts} -Dmaven.test.skip=true package"
 					}
 				}
 			}	
