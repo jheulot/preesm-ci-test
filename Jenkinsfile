@@ -80,7 +80,12 @@ pipeline {
 				// note: run on same node to get test results and findbugs reports
 				// note: never fail on that stage (report warning only)
 				// note: executing in parallel with 'package' should not interfere
+
 				stage ('Sonar') {
+				    agent {
+			            image 'maven:3-jdk-8'
+			            args '--dns 10.4.1.79 -u root --net=host'
+				    }
 	        		steps{
 						sh "mvn ${mavenOpts} sonar:sonar \
 							  -Dsonar.projectKey=preesm \
