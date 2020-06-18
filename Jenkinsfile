@@ -19,7 +19,7 @@ pipeline {
     agent {
         docker {
             image 'maven:3-jdk-8'
-            args '--dns 10.4.1.79 -u root'
+            args '-u root' // --dns 10.4.1.79 
         }
     }
 
