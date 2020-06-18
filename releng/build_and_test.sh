@@ -36,6 +36,10 @@ if [ ! -z ${TRAVIS+x} ]; then
   CI=YES
   SONAR=YES
 fi
+if [ "$1" == "--ci" ]; then
+  CI=YES
+  SONAR=YES
+fi
 
 if [ "${RUNTEST}" == "NO" ]; then
   TESTMODE="-DskipTests=true -Dmaven.test.skip=true"
