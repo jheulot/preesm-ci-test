@@ -32,10 +32,7 @@ pipeline {
 
         stage('Build & Unit Tests'){
         	steps{
-        		withMaven(
-			        mavenSettingsConfig: 'MavenProxy') {
-						sh 'releng/build_and_test.sh --ci'
-			    } 
+				sh 'releng/build_and_test.sh --ci'
 			}
 		}
     }
