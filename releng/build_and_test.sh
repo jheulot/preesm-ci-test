@@ -52,6 +52,7 @@ fi
 
 if [ "${CI}" == "YES" ]; then
   BATCHMODE=-B
+  (cd $DIR && cp ./releng/jenkins_settings.xml ~/.m2/settings.xml)
 else
   BATCHMODE=
 fi
