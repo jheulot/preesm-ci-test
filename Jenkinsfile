@@ -32,7 +32,7 @@ pipeline {
 
         stage('Build & Unit Tests'){
         	steps{
-				sh 'releng/build_and_test.sh --ci'
+				sh 'mvn clean compile -B -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true'
 			}
 		}
     }
