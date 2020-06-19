@@ -33,7 +33,7 @@ pipeline {
         stage('Build & Unit Tests'){
         	steps{
         		withMaven(){
-					sh 'mvn clean verify -B -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true'
+					sh 'export PATH=$MVN_CMD_DIR:$PATH && mvn clean verify -B -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true'
 				}
 			}
 		}
