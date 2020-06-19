@@ -168,6 +168,42 @@ under the License.
       <name>Nexus Maven UK.</name>
       <url>https://10.0.0.2/nexus/repository/maven-central/</url>
     </mirror>
+    <mirror>
+      <id>eclipse-proxy</id>
+      <name>Local proxy of eclipse repo</name>
+      <url>https://10.0.0.2/nexus/repository/eclipse-proxy/</url>
+      <mirrorOf>Eclipse</mirrorOf>
+    </mirror>
+    <mirror>
+      <id>eclipse-updates-proxy</id>
+      <name>Local proxy of eclipse repo</name>
+      <url>https://10.0.0.2/nexus/repository/eclipse-updates-proxy/</url>
+      <mirrorOf>Eclipse Updates</mirrorOf>
+    </mirror>
+    <mirror>
+      <id>preesm-externaldeps</id>
+      <name>Local proxy of eclipse repo</name>
+      <url>https://10.0.0.2/nexus/repository/preesm-externaldeps/</url>
+      <mirrorOf>Preesm External Dependencies Repo</mirrorOf>
+    </mirror>
+    <mirror>
+      <id>preesm-graphiti</id>
+      <name>Local proxy of eclipse repo</name>
+      <url>https://10.0.0.2/nexus/repository/preesm-graphiti/</url>
+      <mirrorOf>Graphiti Repo</mirrorOf>
+    </mirror>
+    <mirror>
+      <id>tmf-proxy</id>
+      <name>Local proxy of eclipse repo</name>
+      <url>https://10.0.0.2/nexus/repository/tmf-proxy/</url>
+      <mirrorOf>TMF Repo</mirrorOf>
+    </mirror>
+<!--     <mirror>
+      <id>rcptt-proxy</id>
+      <name>Local proxy of rcptt repo</name>
+      <url>https://10.0.0.2/nexus/repository/rcptt-releases/</url>
+      <mirrorOf>rcptt-releases</mirrorOf>
+    </mirror> -->
   </mirrors>
   
   <!-- profiles
