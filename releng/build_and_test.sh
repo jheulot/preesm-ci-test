@@ -53,7 +53,6 @@ fi
 if [ "${CI}" == "YES" ]; then
   BATCHMODE=-B
   (cd $DIR && cp ./releng/jenkins_settings.xml ~/.m2/settings.xml)
-  TESTMODE="-Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true"
 else
   BATCHMODE=
 fi
@@ -77,7 +76,7 @@ echo ""
 
 
 (cd $DIR && ./releng/fetch-rcptt-runner.sh)
-time (cd $DIR && mvn -e -c ${BATCHMODE} clean ${BUILDGOAL} ${TESTMODE})
+time (cd $DIR && mvn -e -c ${BATCHMODE} clean ${BUILDGOAL} ${TESTMODE} -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true)
 
 # Sonar
 if [ "${SONAR}" == "YES" ]; then
