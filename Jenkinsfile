@@ -35,13 +35,13 @@ pipeline {
         		withMaven(){
 					sh 'export PATH=$MVN_CMD_DIR:$PATH && mvn clean verify -B -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true'
 					 
-			        junit testResults: '**/target/surefire-reports/TEST-*.xml'
-			 
-			        def java = scanForIssues tool: [$class: 'Java']
-			        def javadoc = scanForIssues tool: [$class: 'JavaDoc']
-			         
-			        publishIssues issues:[java]
-			        publishIssues issues:[javadoc]
+					// junit testResults: '**/target/surefire-reports/TEST-*.xml'
+
+					def java = scanForIssues tool: [$class: 'Java']
+					def javadoc = scanForIssues tool: [$class: 'JavaDoc']
+
+					publishIssues issues:[java]
+					publishIssues issues:[javadoc]
 				}
 			}
 		}
