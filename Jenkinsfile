@@ -34,12 +34,18 @@ pipeline {
 			steps {		
                 sh 'export PATH=$MVN_CMD_DIR:$PATH && mvn clean verify -B -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true'
             }
-            post {
-                success {
-                    junit 'tests/**/target/surefire-reports/**/*.xml' 
-                }
-            }
 		}
+    }
+    post {
+        always {
+            junit testResults: 'tests/**/target/surefire-reports/**/*.xml' 
+
+            recordIssues enabledForFailure: true, tools: [mavenConsole(), java(), javaDoc()]
+            recordIssues enabledForFailure: true, tool: checkStyle()
+            recordIssues enabledForFailure: true, tool: spotBugs()
+            // recordIssues enabledForFailure: true, tool: cpd(pattern: '**/target/cpd.xml')
+            // recordIssues enabledForFailure: true, tool: pmdParser(pattern: '**/target/pmd.xml')
+        }
     }
 }
 
