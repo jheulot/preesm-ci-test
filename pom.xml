@@ -111,7 +111,7 @@
       <!-- http://ftp.fau.de/eclipse/ -->
       <!-- http://ftp.halifax.rwth-aachen.de/eclipse/ -->
       <!-- http://mirror.switch.ch/eclipse/ -->
-      <eclipse.mirror>http://ftp.halifax.rwth-aachen.de/eclipse/</eclipse.mirror>
+      <eclipse.mirror>http://ftp.fau.de/eclipse/</eclipse.mirror>
 
       <!-- ############### -->
       <!-- P2 REPOS CONFIG -->
