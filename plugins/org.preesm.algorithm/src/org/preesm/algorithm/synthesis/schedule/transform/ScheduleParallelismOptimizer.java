@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright or © or Copr. IETR/INSA - Rennes (2019) :
  *
  * Dylan Gageot [gageot.dylan@gmail.com] (2019)

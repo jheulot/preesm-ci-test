@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright or © or Copr. IETR/INSA - Rennes (2020) :
  *
  * Florian Arrestier [florian.arrestier@insa-rennes.fr] (2020)

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright or © or Copr. IETR/INSA - Rennes (2018 - 2020) :
  *
  * Alexandre Honorat [alexandre.honorat@insa-rennes.fr] (2018 - 2020)

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright or © or Copr. IETR/INSA - Rennes (2020) :
  *
  * Julien Heulot [julien.heulot@insa-rennes.fr] (2020)
