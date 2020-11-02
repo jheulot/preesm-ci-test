@@ -498,33 +498,70 @@
             <groupId>com.mycila</groupId>
             <artifactId>license-maven-plugin</artifactId>
             <version>4.0.rc2</version>
+            <inherited>false</inherited>
             <configuration>
-               <!-- Indicate the path to a file containing the license header -->
-               <header>releng/copyright_template.txt</header>
                <!-- List of default excludes -->
                <useDefaultExcludes>true</useDefaultExcludes>
+               <aggregate>true</aggregate>
                <!-- Custom excludes -->
-               <excludes>
-                  <exclude>**/fi.abo*/**</exclude>
-                  <exclude>LICENSE</exclude>
-                  <exclude>Jenkinsfile</exclude>
-                  <exclude>.mailmap</exclude>
-                  <exclude>**/README.md</exclude>
-                  <exclude>**/resources/**</exclude>
-                  <exclude>**/ecore-gen/**</exclude>
-                  <exclude>**/xtend-gen/**</exclude>
-                  <exclude>**/target/**</exclude>
-                  <exclude>**/bin/**</exclude>
-                  <exclude>libs/**</exclude>
-                  <exclude>doc/**</exclude>
-                  <exclude>**/*.sh</exclude>
-                  <exclude>**/*.txt</exclude>
-                  <exclude>**/*.css</exclude>
-                  <exclude>**/*.PNG</exclude>
-                  <exclude>**/*.xsl</exclude>
-                  <exclude>**/rcptt.properties</exclude>
-               </excludes>
-               <!-- Additional extensions to support -->
+               <licenseSets>
+                  <licenseSet>
+                    <!-- Indicate the path to a file containing the license header -->
+                    <header>releng/copyright_template.txt</header>
+                    <excludes>
+                      <exclude>**/fi.abo*/**</exclude>
+                      <exclude>LICENSE</exclude>
+                      <exclude>Jenkinsfile</exclude>
+                      <exclude>.mailmap</exclude>
+                      <exclude>**/README.md</exclude>
+                      <exclude>**/resources/**</exclude>
+                      <exclude>**/ecore-gen/**</exclude>
+                      <exclude>**/xtend-gen/**</exclude>
+                      <exclude>**/target/**</exclude>
+                      <exclude>**/bin/**</exclude>
+                      <exclude>libs/**</exclude>
+                      <exclude>doc/**</exclude>
+                      <exclude>**/*.sh</exclude>
+                      <exclude>**/*.txt</exclude>
+                      <exclude>**/*.css</exclude>
+                      <exclude>**/*.pi</exclude>
+                      <exclude>**/*.PNG</exclude>
+                      <exclude>**/*.xsl</exclude>
+                      <exclude>**/*.xslt</exclude>
+                      <exclude>**/rcptt.properties</exclude>
+                      <exclude>**/copyright_template*</exclude>
+                    </excludes>
+                  </licenseSet>
+                  <licenseSet>
+                    <!-- Indicate the path to a file containing the license header -->
+                    <header>releng/copyright_template_fi_abo.txt</header>
+                    <includes>
+                      <include>**/fi.abo*/**</include>
+                    </includes>
+                    <excludes>
+                      <exclude>LICENSE</exclude>
+                      <exclude>Jenkinsfile</exclude>
+                      <exclude>.mailmap</exclude>
+                      <exclude>**/README.md</exclude>
+                      <exclude>**/resources/**</exclude>
+                      <exclude>**/ecore-gen/**</exclude>
+                      <exclude>**/xtend-gen/**</exclude>
+                      <exclude>**/target/**</exclude>
+                      <exclude>**/bin/**</exclude>
+                      <exclude>libs/**</exclude>
+                      <exclude>doc/**</exclude>
+                      <exclude>**/*.sh</exclude>
+                      <exclude>**/*.txt</exclude>
+                      <exclude>**/*.css</exclude>
+                      <exclude>**/*.pi</exclude>
+                      <exclude>**/*.PNG</exclude>
+                      <exclude>**/*.xsl</exclude>
+                      <exclude>**/*.xslt</exclude>
+                      <exclude>**/rcptt.properties</exclude>
+                      <exclude>**/copyright_template*</exclude>
+                    </excludes>
+                  </licenseSet>
+               </licenseSets>
                <mapping>
                   <properties>SCRIPT_STYLE</properties>
                   <ecore>XML_STYLE</ecore>
