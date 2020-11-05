@@ -3,7 +3,7 @@
  *
  * Antoine Morvan [antoine.morvan@insa-rennes.fr] (2017 - 2019)
  * Matthieu Wipliez [matthieu.wipliez@insa-rennes.fr] (2008)
- * Maxime Pelcat [maxime.pelcat@insa-rennes.fr] (2008 - 2012)
+ * Maxime Pelcat [maxime.pelcat@insa-rennes.fr] (2010 - 2012)
  *
  * This software is a computer program whose purpose is to help prototyping
  * parallel applications using dataflow formalism.

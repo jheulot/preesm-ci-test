@@ -3,11 +3,11 @@
  *
  * Alexandre Honorat [alexandre.honorat@insa-rennes.fr] (2020)
  * Antoine Morvan [antoine.morvan@insa-rennes.fr] (2017 - 2019)
- * Clément Guy [clement.guy@insa-rennes.fr] (2014 - 2015)
+ * Clément Guy [clement.guy@insa-rennes.fr] (2014)
  * Daniel Madroñal [daniel.madronal@upm.es] (2019)
  * Dylan Gageot [gageot.dylan@gmail.com] (2019)
  * Julien Hascoet [jhascoet@kalray.eu] (2016)
- * Julien Heulot [julien.heulot@insa-rennes.fr] (2015 - 2020)
+ * Julien Heulot [julien.heulot@insa-rennes.fr] (2015)
  * Karol Desnos [karol.desnos@insa-rennes.fr] (2013)
  * Leonardo Suriano [leonardo.suriano@upm.es] (2019)
  * Maxime Pelcat [maxime.pelcat@insa-rennes.fr] (2013)

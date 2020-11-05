@@ -3,7 +3,7 @@
  *
  * Alexandre Honorat [alexandre.honorat@insa-rennes.fr] (2019)
  * Antoine Morvan [antoine.morvan@insa-rennes.fr] (2017 - 2019)
- * Clément Guy [clement.guy@insa-rennes.fr] (2014 - 2015)
+ * Clément Guy [clement.guy@insa-rennes.fr] (2015)
  * Florian Arrestier [florian.arrestier@insa-rennes.fr] (2018)
  * Julien Hascoet [jhascoet@kalray.eu] (2017)
  * Karol Desnos [karol.desnos@insa-rennes.fr] (2012 - 2017)

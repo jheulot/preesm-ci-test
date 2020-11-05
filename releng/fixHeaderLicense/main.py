@@ -56,17 +56,17 @@ def getHeaderRangeFromCommit(repo, hash, diff, extension):
     valid = False
     for index, line in enumerate(fileAtCommit.splitlines()):
         if start == -1:
-            if line.contains(Comments[extension][0]):
+            if Comments[extension][0] in line:
                 start = index
         else:
-            if line.contains("Copyright"):
+            if "Copyright" in line:
                 valid = True
-            if line.contains(Comments[extension][1]):
+            if Comments[extension][1] in line:
                 if valid:
                     return start, index
                 else:
                     start = -1
-            elif line.contains(Comments[extension][2]):
+            elif Comments[extension][2] in line:
                 continue
             else:
                 return 0, 0
@@ -121,6 +121,7 @@ if __name__ == '__main__':
         filelog = repo.git.log("-p", "-U0", "--follow", "--use-mailmap", "--date=format:%Y", "--format=## %ad %aN <%aE> %H ##", file)
 
         commitLogs = re.findall(r'^## (\d{4}) ([\w ]*) <([^>]*)> (\w*) ##\n\n([^##]*)', filelog, re.MULTILINE)
+        _, ext = os.path.splitext(file)
 
         fileDate = -1
         authors = {}
@@ -134,7 +135,7 @@ if __name__ == '__main__':
             createdFile = not(len(re.findall(r'--- \/dev\/null', diff, re.MULTILINE)) == 0)
             deletedFile = not(len(re.findall(r'\+\+\+ \/dev\/null', diff, re.MULTILINE)) == 0)
 
-            if (not deletedFile) and (createdFile or not isHeaderOnlyCommit(diff, getHeaderRangeFromCommit(repo, hash, diff))):
+            if (not deletedFile) and (createdFile or not isHeaderOnlyCommit(diff, getHeaderRangeFromCommit(repo, hash, diff, ext))):
                 # Update file date
                 if fileDate == -1:
                     fileDate = (year, year)

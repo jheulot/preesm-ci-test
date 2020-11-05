@@ -3,7 +3,7 @@
  * IETR/INSA - Rennes (2017 - 2019) :
  *
  * Antoine Morvan [antoine.morvan@insa-rennes.fr] (2018 - 2019)
- * Sudeep Kanur [skanur@abo.fi] (2017 - 2018)
+ * Sudeep Kanur [skanur@abo.fi] (2017)
  *
  * This software is a computer program whose purpose is to help prototyping
  * parallel applications using dataflow formalism.
