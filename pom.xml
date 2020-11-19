@@ -128,6 +128,16 @@
       <!-- ############## -->
       <jacoco.destFile>../../target/jacoco.exec</jacoco.destFile>
       <sonar.coverage.jacoco.xmlReportPaths>${project.reporting.outputDirectory}/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+
+
+      <generate-composite-site.compositeSiteFolder>composite</generate-composite-site.compositeSiteFolder>
+      <generate-composite-site.childSites>
+         ${updatesite.preesm}/${project.groupId}/${project.groupId}-${qualifiedVersion}/
+      </generate-composite-site.childSites>
+      <generate-composite-site.collectChildrenFromRemoteURL>
+         ${updatesite.preesm}/${project.groupId}/
+      </generate-composite-site.collectChildrenFromRemoteURL>
+      <generate-composite-site.collectChildrenFromRemoteRegex>org\.(.*)\d+\.\d+\.\d+/</generate-composite-site.collectChildrenFromRemoteRegex>
    </properties>
 
    <repositories>
@@ -165,7 +175,24 @@
          <layout>p2</layout>
          <url>${updatesite.tmf}</url>
       </repository>
+      <repository>
+        <id>rcptt-releases</id>
+        <name>RCPTT Maven repository</name>
+        <url>https://repo.eclipse.org/content/repositories/rcptt-releases/</url>
+      </repository>
    </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>rcptt-releases</id>
+      <name>RCPTT Maven repository</name>
+      <url>https://repo.eclipse.org/content/repositories/rcptt-releases/</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>sonatype-public</id>
+      <url>http://repository.jboss.org/nexus/content/repositories/releases/</url>
+    </pluginRepository>
+  </pluginRepositories>
 
    <build>
       <sourceDirectory>src</sourceDirectory>
@@ -682,6 +709,15 @@
                </execution>
             </executions>
          </plugin>
+         <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-p2-repository-plugin</artifactId>
+        <version>${tycho-version}</version>
+        <configuration>
+          <repositoryName>IETR/INSA - Rennes PREESM Update Site</repositoryName>
+          <skipArchive>true</skipArchive>
+        </configuration>
+      </plugin>
       </plugins>
    </build>
 
@@ -771,6 +807,136 @@
          <properties>
             <tycho.surefire.extra.vmargs>-XstartOnFirstThread</tycho.surefire.extra.vmargs>
          </properties>
+      </profile>
+
+      <profile>
+        <id>repository-project</id>
+        <activation>
+          <file>
+            <exists>index.html</exists>
+          </file>
+        </activation>
+
+        <build>
+          <plugins>
+            <plugin>
+              <groupId>org.jboss.tools.tycho-plugins</groupId>
+              <artifactId>repository-utils</artifactId>
+              <version>1.1.0</version>
+              <executions>
+                <!-- creates index.html and other artifacts -->
+                <!-- see https://github.com/jbosstools/jbosstools-maven-plugins/wiki -->
+                <execution>
+                  <id>generate-facade</id>
+                  <phase>package</phase>
+                  <goals>
+                    <goal>generate-repository-facade</goal>
+                  </goals>
+                  <configuration>
+                    <siteTemplateFolder>siteTemplateFolder</siteTemplateFolder>
+                    <!-- configuration options for the generated HTML page -->
+                    <symbols>
+                      <update.site.name>Preesm</update.site.name>
+                      <update.site.description>Eclipse</update.site.description>
+                      <update.site.version>${qualifiedVersion}</update.site.version>
+                    </symbols>
+
+                    <!-- this adds repository references to the update site's content.xml -->
+                    <associateSites>
+                      <site>${updatesite.preesm.externaldeps}</site>
+                      <site>${updatesite.preesm.graphiti}</site>
+                      <site>${updatesite.eclipse}</site>
+                      <site>${updatesite.eclipse.updates}</site>
+                      <site>${updatesite.tmf}</site>
+                    </associateSites>
+                    <!-- to remove the default category created for any uncategorized 
+                      features or bundles, set this to true -->
+                    <removeDefaultCategory>true</removeDefaultCategory>
+                  </configuration>
+                </execution>
+                 <execution>
+                    <id>generate-composite</id>
+                    <phase>package</phase>
+                    <goals>
+                       <goal>generate-composite-site</goal>
+                    </goals>
+                 </execution>
+              </executions>
+            </plugin>
+            <plugin>
+              <!-- ## NOTE: make sure this is after the tycho-p2-extras-plugin
+                in the pom.xml text -->
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-antrun-plugin</artifactId>
+              <version>1.8</version>
+              <executions>
+                <execution>
+                  <id>copy-repo</id>
+                  <phase>package</phase>
+                  <goals>
+                    <goal>run</goal>
+                  </goals>
+                  <configuration>
+                    <conditions><equals arg1="${projetc.artifactId}" arg2="org.preesm.site" /></conditions>
+                    <target name="Copy content">
+                      <!-- Copy repo to gensite folder -->
+                      <copy
+                        todir="${project.build.directory}/gensite/update-site/${project.groupId}-${qualifiedVersion}/">
+                        <fileset dir="${project.build.directory}/repository/" />
+                      </copy>
+                      <!-- Add symlink for latest release -->
+                      <symlink
+                        link="${project.build.directory}/gensite/update-site/${project.groupId}-latest"
+                        resource="${project.groupId}-${qualifiedVersion}" />
+                    </target>
+                    <exportAntProperties>true</exportAntProperties>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+
+            <!-- Finally upload merged metadata and new content -->
+            <plugin>
+              <groupId>org.preesm.maven</groupId>
+              <artifactId>sftp-maven-plugin</artifactId>
+              <version>1.0.0</version>
+              <executions>
+                <execution>
+                  <id>upload-repo</id>
+                  <phase>deploy</phase>
+                  <configuration>
+                    <serverId>preesm-insa-rennes</serverId>
+                    <serverHost>preesm.insa-rennes.fr</serverHost>
+                    <serverPort>8022</serverPort>
+                    <strictHostKeyChecking>false</strictHostKeyChecking>
+                    <mode>send</mode>
+                    <localPath>${project.build.directory}/gensite/update-site/</localPath>
+                    <remotePath>/repo/${project.groupId}/</remotePath>
+                  </configuration>
+                  <goals>
+                    <goal>sftp-transfert</goal>
+                  </goals>
+                </execution>
+               <execution>
+                  <id>upload-composite</id>
+                  <phase>deploy</phase>
+                  <configuration>
+                     <serverId>preesm-insa-rennes</serverId>
+                     <serverHost>preesm.insa-rennes.fr</serverHost>
+                     <serverPort>8022</serverPort>
+                     <strictHostKeyChecking>false</strictHostKeyChecking>
+                     <mode>send</mode>
+                     <localPath>${project.build.directory}/composite/</localPath>
+                     <remotePath>/repo/${project.groupId}/</remotePath>
+                  </configuration>
+                  <goals>
+                     <goal>sftp-transfert</goal>
+                  </goals>
+               </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </build>
       </profile>
 
       <!-- Specific profile for Eclipse related configuration -->
