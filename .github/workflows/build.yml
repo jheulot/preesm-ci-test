@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: maven:3.8.1-jdk-11
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
@@ -22,4 +22,4 @@ jobs:
           TRAVIS: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./releng/build_and_test.sh
+        run: bash ./releng/build_and_test.sh
